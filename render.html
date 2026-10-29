@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Página de RENDER das artes estáticas: o ad-spy-worker a abre num Chrome sem tela, entrega o
+         post por `window.__renderizar(...)` e fotografa o #palco. Não tem dado nenhum, não tem login
+         e não carrega o app: só os templates (src/render/main.tsx). -->
+    <meta name="robots" content="noindex" />
+    <title>Companium · render</title>
+    <!-- Sem <style> inline: a CSP do site (style-src 'self') o bloquearia. A margem zero é posta
+         pelo src/render/main.tsx, via CSSOM, que a CSP não bloqueia. -->
+  </head>
+  <body>
+    <div id="palco"></div>
+    <script type="module" src="/src/render/main.tsx"></script>
+  </body>
+</html>

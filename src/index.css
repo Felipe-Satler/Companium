@@ -1,0 +1,865 @@
+/* Fonte Inter AUTO-HOSPEDADA (servida pelo próprio domínio, /fonts/*.woff2). Substitui o
+   antigo <link> para fonts.googleapis.com, que o CSP (style-src 'self') bloqueava. Assim
+   não precisamos afrouxar o CSP: font-src 'self' já cobre estes arquivos locais.
+   Subset latin (cobre os acentos do pt-BR); display=swap evita texto em branco no 1º paint. */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("/fonts/inter-300.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/inter-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/inter-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/inter-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/inter-700.woff2") format("woff2");
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* === DARK MODE (default) — Companium brand === */
+  :root, .dark {
+    --background: 213 51% 11%;
+    --foreground: 210 12% 93%;
+
+    /* Chat surface — matches --bot-panel in chatbot.css. Global (not scoped to
+       .gh-chatbot) so the route fallback can paint it before the lazy chat
+       bundle loads, avoiding a flash of the app background on navigation. */
+    --chat-surface: #1f2430;
+    /* Painel lateral (Conversas / Gerados) — tom DISTINTO da área de conversa
+       (um pouco mais escuro no dark) p/ separar visualmente as duas colunas. */
+    --chat-side-panel: #191d27;
+
+    --card: 213 45% 15%;
+    --card-foreground: 210 12% 93%;
+
+    --popover: 213 45% 15%;
+    --popover-foreground: 210 12% 93%;
+
+    --primary: 214 85% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 213 40% 19%;
+    --secondary-foreground: 210 12% 88%;
+
+    --muted: 213 35% 17%;
+    --muted-foreground: 213 15% 68%;
+
+    --accent: 214 85% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 213 35% 22%;
+    --input: 213 35% 22%;
+    --ring: 214 85% 60%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 213 55% 8%;
+    --sidebar-foreground: 210 15% 78%;
+    --sidebar-muted-foreground: 213 18% 60%;
+    --sidebar-primary: 214 85% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 213 45% 14%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 213 35% 18%;
+    --sidebar-ring: 214 85% 60%;
+
+    --chart-line-primary: 156 64% 47%;
+    --chart-line-forecast: 214 82% 51%;
+    --chart-line-pace: 30 80% 55%;
+    --chart-line-conversion: 260 50% 60%;
+    /* 2ª série dos gráficos (ex.: Cancelados / MRR perdido): âmbar claro, alto
+       contraste sobre o fundo escuro e distinto do azul da 1ª série. */
+    --chart-line-secondary: 38 92% 62%;
+    /* Textos dos gráficos: rótulos de dados mais claros, eixos/legendas um
+       degrau abaixo — mesma hierarquia (#F0EFEC / #C3C2B7) usada nos insights. */
+    --chart-label: 40 11% 93%;
+    --chart-axis: 50 8% 74%;
+
+    --success: 156 64% 47%;
+    --warning: 30 80% 55%;
+    --danger: 0 70% 50%;
+
+    --live-dot: 0 80% 55%;
+  }
+
+  /* === LIGHT MODE (default) — Companium brand (fundo prata, azul #1A73E9, sidebar branca) ===
+     Canvas em prata levemente mais escuro que o #F4F6F7 original p/ os cartões brancos
+     (com borda) se destacarem bem — separação nítida entre fundo e quadros/gráficos. */
+  .light {
+    --background: 215 68% 95%; /* #EAF1FB */
+    --foreground: 213 51% 11%;
+
+    --chat-surface: #ffffff;
+    /* Painel lateral em cinza-prata suave sobre a área de conversa branca. */
+    --chat-side-panel: #f5f6f8;
+
+    --card: 0 0% 100%;
+    --card-foreground: 213 51% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 213 51% 11%;
+
+    --primary: 214 82% 51%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 14% 91%;
+    --secondary-foreground: 213 40% 25%;
+
+    --muted: 210 16% 93%;
+    --muted-foreground: 213 22% 35%;
+
+    --accent: 214 82% 51%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 18% 83%;
+    --input: 214 18% 83%;
+    --ring: 214 82% 51%;
+
+    --radius: 0.75rem;
+
+    /* Sidebar BRANCA: texto/ícones escuros p/ leitura, ativo/hover em azul claro. */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 215 20% 32%;
+    --sidebar-muted-foreground: 215 14% 50%;
+    --sidebar-primary: 214 82% 51%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 214 82% 95%;
+    --sidebar-accent-foreground: 214 82% 42%;
+    --sidebar-border: 210 16% 90%;
+    --sidebar-ring: 214 82% 51%;
+
+    --chart-line-primary: 156 64% 42%;
+    --chart-line-forecast: 214 82% 51%;
+    --chart-line-pace: 30 80% 48%;
+    --chart-line-conversion: 260 50% 50%;
+    /* Tema claro: 2ª série âmbar mais escura p/ contraste sobre o fundo claro;
+       textos escuros (rótulo mais escuro, eixo/legenda um degrau mais claro). */
+    --chart-line-secondary: 30 85% 42%;
+    --chart-label: 213 40% 16%;
+    --chart-axis: 213 20% 40%;
+
+    --success: 156 64% 42%;
+    --warning: 30 80% 48%;
+    --danger: 0 70% 50%;
+
+    --live-dot: 0 80% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', sans-serif;
+    /* Dígitos tabulares em todo o app: KPIs e colunas de tabela ficam alinhados
+       (mesmo acabamento do modelo). Não muda layout, só o alinhamento dos números. */
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+/* === M3-inspired ambient background effects === */
+
+.bg-ambient {
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-ambient::before {
+  content: '';
+  position: fixed;
+  top: -40%;
+  right: -20%;
+  width: 70%;
+  height: 70%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    hsl(214 82% 47% / 0.06) 0%,
+    hsl(214 82% 47% / 0.02) 40%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+  animation: drift-slow 20s ease-in-out infinite alternate;
+}
+
+.bg-ambient::after {
+  content: '';
+  position: fixed;
+  bottom: -30%;
+  left: -15%;
+  width: 60%;
+  height: 60%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    hsl(214 82% 51% / 0.05) 0%,
+    hsl(213 51% 20% / 0.03) 40%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+  animation: drift-slow 25s ease-in-out infinite alternate-reverse;
+}
+
+/* Noise texture overlay for depth */
+.bg-noise::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Card glass effect */
+.card-glass {
+  backdrop-filter: blur(12px);
+  background: linear-gradient(
+    135deg,
+    hsl(213 45% 15% / 0.8) 0%,
+    hsl(213 45% 13% / 0.6) 100%
+  );
+  border: 1px solid hsl(213 35% 25% / 0.4);
+  box-shadow:
+    0 4px 24px -4px hsl(213 55% 6% / 0.4),
+    inset 0 1px 0 hsl(210 12% 93% / 0.04);
+}
+
+/* === Neumorphism — Dark === */
+.dark .neu-card {
+  background: hsl(213 45% 14%);
+  border: none;
+  border-radius: 16px;
+  box-shadow:
+    6px 6px 14px 0 hsl(213 55% 6% / 0.7),
+    -6px -6px 14px 0 hsl(213 40% 22% / 0.4),
+    inset 0 1px 0 hsl(213 35% 24% / 0.3);
+  transition: box-shadow 0.3s ease;
+}
+.dark .neu-card:hover {
+  box-shadow:
+    4px 4px 10px 0 hsl(213 55% 6% / 0.6),
+    -4px -4px 10px 0 hsl(213 40% 22% / 0.35),
+    inset 0 1px 0 hsl(213 35% 24% / 0.3);
+}
+
+/* Elemento flutuante elevado (tooltips de gráfico, popovers, toggle ativo).
+   Fundo OPACO para os hovers dos gráficos serem legíveis (antes o token não
+   existia → fundo transparente → "apagado"). */
+.dark .neu-raised {
+  background: hsl(213 45% 18%);
+  border: 1px solid hsl(213 35% 28%);
+  box-shadow:
+    0 12px 30px -6px hsl(213 60% 3% / 0.8),
+    0 3px 10px -2px hsl(213 60% 3% / 0.6);
+}
+.light .neu-raised {
+  background: hsl(0 0% 100%);
+  border: 1px solid hsl(214 20% 82%);
+  box-shadow:
+    0 12px 30px -6px hsl(214 35% 35% / 0.28),
+    0 3px 10px -2px hsl(214 30% 40% / 0.16);
+}
+.dark .neu-inset {
+  background: hsl(213 50% 12%);
+  border: none;
+  border-radius: 12px;
+  box-shadow:
+    inset 4px 4px 8px 0 hsl(213 55% 6% / 0.6),
+    inset -4px -4px 8px 0 hsl(213 40% 20% / 0.3);
+}
+
+/* Neumorphic dialog/modal — raised surface with defined border */
+.neu-dialog {
+  border-radius: 20px;
+}
+.dark .neu-dialog {
+  background: linear-gradient(145deg, hsl(213 45% 16%), hsl(213 48% 12%));
+  border: 1px solid hsl(213 40% 28% / 0.6);
+  box-shadow:
+    0 30px 60px -20px hsl(213 65% 2% / 0.85),
+    12px 12px 28px 0 hsl(213 60% 3% / 0.7),
+    -10px -10px 24px 0 hsl(213 40% 24% / 0.35),
+    inset 0 1px 0 hsl(213 40% 36% / 0.7),
+    inset 0 -1px 0 hsl(213 60% 5% / 0.5),
+    0 0 0 1px hsl(214 82% 47% / 0.12);
+}
+.light .neu-dialog {
+  background: linear-gradient(145deg, hsl(0 0% 100%), hsl(210 15% 94%));
+  border: 1px solid hsl(210 15% 80% / 0.7);
+  box-shadow:
+    0 30px 60px -20px hsl(210 20% 50% / 0.35),
+    12px 12px 28px 0 hsl(210 15% 78% / 0.65),
+    -10px -10px 24px 0 hsl(0 0% 100% / 0.85),
+    inset 0 1px 0 hsl(0 0% 100% / 0.9),
+    0 0 0 1px hsl(214 82% 42% / 0.15);
+}
+.dark .neu-button:hover,
+.dark .neu-button:focus,
+.dark .neu-button:active {
+  background: linear-gradient(145deg, hsl(213 45% 19%), hsl(213 48% 14%));
+  color: hsl(210 14% 96%) !important;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.dark .neu-button {
+  border: 1px solid hsl(213 40% 26% / 0.6);
+  border-radius: 12px;
+  box-shadow:
+    6px 6px 14px 0 hsl(213 60% 3% / 0.85),
+    -5px -5px 12px 0 hsl(213 40% 26% / 0.5),
+    inset 0 1px 0 hsl(213 40% 32% / 0.7),
+    inset 0 -1px 0 hsl(213 60% 5% / 0.5);
+  transition: box-shadow 0.2s ease, transform 0.2s ease, filter 0.2s ease, border-color 0.2s ease;
+}
+.dark .neu-button:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(145deg, hsl(213 45% 22%), hsl(213 48% 17%));
+  border-color: hsl(214 82% 47% / 0.55);
+  box-shadow:
+    7px 7px 18px 0 hsl(213 60% 3% / 0.9),
+    -6px -6px 14px 0 hsl(213 40% 30% / 0.6),
+    inset 0 1px 0 hsl(213 40% 36% / 0.8),
+    0 0 0 1px hsl(214 82% 47% / 0.35);
+}
+.dark .neu-button:active {
+  transform: translateY(1px);
+  background: linear-gradient(145deg, hsl(213 48% 14%), hsl(213 45% 18%));
+  box-shadow:
+    inset 4px 4px 8px 0 hsl(213 60% 3% / 0.7),
+    inset -3px -3px 6px 0 hsl(213 40% 26% / 0.4);
+}
+
+/* Primary neumorphic button — brand blue #1A73E9, high visibility */
+.neu-button-primary,
+.neu-button-primary:hover,
+.neu-button-primary:focus,
+.neu-button-primary:active {
+  background: linear-gradient(145deg, hsl(214 85% 56%), hsl(214 82% 46%));
+  color: hsl(0 0% 100%) !important;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.neu-button-primary {
+  border: none;
+  border-radius: 12px;
+  transition: box-shadow 0.2s ease, transform 0.2s ease, filter 0.2s ease;
+}
+.dark .neu-button-primary {
+  box-shadow:
+    6px 6px 16px 0 hsl(213 60% 3% / 0.85),
+    -5px -5px 14px 0 hsl(214 82% 47% / 0.25),
+    inset 0 1px 0 hsl(214 88% 80% / 0.65),
+    inset 0 -2px 0 hsl(214 88% 22% / 0.5),
+    0 0 0 1px hsl(214 82% 40% / 0.5);
+}
+.dark .neu-button-primary:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+  box-shadow:
+    8px 8px 20px 0 hsl(213 60% 3% / 0.9),
+    -6px -6px 16px 0 hsl(214 82% 47% / 0.35),
+    inset 0 1px 0 hsl(214 88% 80% / 0.7),
+    0 0 0 1px hsl(214 82% 47% / 0.6);
+}
+.dark .neu-button-primary:active {
+  transform: translateY(1px);
+  box-shadow:
+    inset 4px 4px 8px 0 hsl(213 60% 3% / 0.5),
+    inset -3px -3px 6px 0 hsl(214 88% 30% / 0.4),
+    0 0 0 1px hsl(214 82% 40% / 0.5);
+}
+.light .neu-button-primary {
+  box-shadow:
+    4px 4px 12px 0 hsl(214 82% 30% / 0.35),
+    -4px -4px 12px 0 hsl(0 0% 100% / 0.8),
+    inset 0 1px 0 hsl(214 82% 75% / 0.6);
+}
+.light .neu-button-primary:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.04);
+  box-shadow:
+    6px 6px 16px 0 hsl(214 82% 30% / 0.4),
+    -5px -5px 14px 0 hsl(0 0% 100% / 0.9),
+    inset 0 1px 0 hsl(214 82% 75% / 0.7);
+}
+/* Danger neumorphic button — red, high visibility */
+.neu-button-danger,
+.neu-button-danger:hover,
+.neu-button-danger:focus,
+.neu-button-danger:active {
+  background: linear-gradient(145deg, hsl(0 75% 58%), hsl(0 70% 45%));
+  color: hsl(0 0% 100%) !important;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.neu-button-danger {
+  border: none;
+  border-radius: 12px;
+  transition: box-shadow 0.2s ease, transform 0.2s ease, filter 0.2s ease;
+}
+.dark .neu-button-danger {
+  box-shadow:
+    6px 6px 16px 0 hsl(213 60% 3% / 0.85),
+    -5px -5px 14px 0 hsl(0 70% 50% / 0.25),
+    inset 0 1px 0 hsl(0 90% 85% / 0.6),
+    inset 0 -2px 0 hsl(0 80% 22% / 0.5),
+    0 0 0 1px hsl(0 70% 40% / 0.5);
+}
+.dark .neu-button-danger:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+  box-shadow:
+    8px 8px 20px 0 hsl(213 60% 3% / 0.9),
+    -6px -6px 16px 0 hsl(0 70% 50% / 0.4),
+    inset 0 1px 0 hsl(0 90% 85% / 0.7),
+    0 0 0 1px hsl(0 70% 50% / 0.6);
+}
+.dark .neu-button-danger:active {
+  transform: translateY(1px);
+  box-shadow:
+    inset 4px 4px 8px 0 hsl(213 60% 3% / 0.5),
+    inset -3px -3px 6px 0 hsl(0 80% 30% / 0.4),
+    0 0 0 1px hsl(0 70% 40% / 0.5);
+}
+.light .neu-button-danger {
+  box-shadow:
+    4px 4px 12px 0 hsl(0 70% 35% / 0.35),
+    -4px -4px 12px 0 hsl(0 0% 100% / 0.8),
+    inset 0 1px 0 hsl(0 90% 80% / 0.6);
+}
+.light .neu-button-danger:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.04);
+  box-shadow:
+    6px 6px 16px 0 hsl(0 70% 35% / 0.4),
+    -5px -5px 14px 0 hsl(0 0% 100% / 0.9),
+    inset 0 1px 0 hsl(0 90% 80% / 0.7);
+}
+
+.dark .neu-sidebar {
+  background: hsl(213 55% 8%);
+  box-shadow:
+    6px 0 16px 0 hsl(213 55% 4% / 0.5),
+    inset -1px 0 0 hsl(213 35% 16% / 0.3);
+}
+
+/* === Light — superfícies DEFINIDAS (borda nítida + branco no fundo #F4F6F7) ===
+   O tema claro larga o neumorfismo "shadow-only" (baixa separação) e passa a usar
+   cartões/campos BRANCOS com borda de 1px sobre o canvas cinza, mais uma sombra suave
+   p/ profundidade — quadros, gráficos e filtros ficam nitidamente destacados. */
+.light .neu-card {
+  background: hsl(0 0% 100%);
+  border: 1px solid hsl(214 20% 84%);
+  border-radius: 16px;
+  box-shadow:
+    0 1px 2px 0 hsl(214 25% 45% / 0.07),
+    0 10px 26px -8px hsl(214 30% 40% / 0.14);
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.light .neu-card:hover {
+  border-color: hsl(214 45% 80%);
+  box-shadow:
+    0 1px 2px 0 hsl(214 25% 45% / 0.08),
+    0 12px 28px -8px hsl(214 40% 42% / 0.18);
+}
+.light .neu-inset {
+  background: hsl(0 0% 100%);
+  border: 1px solid hsl(214 18% 82%);
+  border-radius: 12px;
+  box-shadow: inset 0 1px 2px 0 hsl(214 24% 60% / 0.12);
+}
+.light .neu-button {
+  background: hsl(0 0% 100%);
+  border: 1px solid hsl(214 16% 85%);
+  border-radius: 12px;
+  box-shadow: 0 1px 2px 0 hsl(214 25% 45% / 0.08);
+  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+.light .neu-button:hover {
+  transform: translateY(-1px);
+  border-color: hsl(214 60% 72%);
+  box-shadow:
+    0 4px 10px -2px hsl(214 30% 45% / 0.18);
+}
+.light .neu-button:active {
+  transform: translateY(0);
+  box-shadow: inset 0 1px 3px 0 hsl(214 24% 55% / 0.18);
+}
+.light .neu-sidebar {
+  background: hsl(0 0% 100%);
+  box-shadow:
+    4px 0 18px 0 hsl(210 20% 70% / 0.28),
+    inset -1px 0 0 hsl(210 16% 90% / 0.9);
+}
+/* Sidebar BRANCA (tema claro): itens em superfície branca — hover cinza suave,
+   ativo em azul claro com filete azul, sombras neumórficas claras. Vence a regra
+   global (dark) por especificidade extra + !important. */
+.light .neu-sidebar-item:hover:not(.is-active) {
+  background: hsl(210 16% 96%);
+  box-shadow:
+    2px 2px 5px 0 hsl(210 18% 78% / 0.5),
+    -2px -2px 5px 0 hsl(0 0% 100% / 0.9);
+}
+/* Ativo (claro) no padrão do modelo: gradiente AZUL PLANO + filete (rail) azul à
+   esquerda + texto/ícone em azul-tinta (accent-ink). Larga o inset neumórfico. */
+.light .neu-sidebar-item.is-active {
+  position: relative;
+  background: linear-gradient(90deg, hsl(214 82% 95%), hsl(214 90% 97%)) !important;
+  box-shadow: none;
+  color: hsl(212 88% 39%) !important;
+}
+.light .neu-sidebar-item.is-active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: hsl(214 82% 51%);
+}
+.light .neu-sidebar-item.is-active svg {
+  color: hsl(212 88% 39%);
+}
+.light .neu-sidebar-subitem.is-active {
+  background: hsl(214 82% 95%) !important;
+  box-shadow: none;
+  color: hsl(212 88% 39%) !important;
+}
+.light .neu-sidebar-subitem.is-active svg {
+  color: hsl(212 88% 39%);
+}
+
+/* === Sidebar item neumorphism (works on dark sidebar panel in both themes) === */
+.neu-sidebar-item {
+  border-radius: 10px;
+  transition: box-shadow 0.2s ease, background-color 0.2s ease, transform 0.15s ease;
+}
+.neu-sidebar-item:hover:not(.is-active) {
+  box-shadow:
+    3px 3px 6px 0 hsl(213 60% 4% / 0.45),
+    -2px -2px 6px 0 hsl(213 35% 18% / 0.25);
+}
+.neu-sidebar-item.is-active {
+  background: hsl(213 55% 9%) !important;
+  box-shadow:
+    inset 3px 3px 6px 0 hsl(213 65% 4% / 0.7),
+    inset -2px -2px 5px 0 hsl(213 35% 18% / 0.35),
+    inset 0 0 0 1px hsl(214 82% 47% / 0.25);
+}
+.neu-sidebar-subitem {
+  border-radius: 8px;
+  transition: box-shadow 0.2s ease, background-color 0.2s ease;
+}
+.neu-sidebar-subitem.is-active {
+  background: hsl(213 55% 9%) !important;
+  box-shadow:
+    inset 2px 2px 4px 0 hsl(213 65% 4% / 0.6),
+    inset -1px -1px 3px 0 hsl(213 35% 18% / 0.3),
+    inset 2px 0 0 hsl(214 82% 47% / 0.9);
+}
+
+/* === Neumorphic Tabs === */
+.neu-tab {
+  position: relative;
+  border-radius: 10px;
+  padding: 0.4rem 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: hsl(var(--muted-foreground));
+  background: transparent;
+  transition: box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+.neu-tab:hover:not([data-state="active"]):not(.is-active) {
+  color: hsl(var(--foreground));
+}
+.dark .neu-tab[data-state="active"],
+.dark .neu-tab.is-active {
+  background: linear-gradient(145deg, hsl(213 45% 19%), hsl(213 48% 14%));
+  color: hsl(210 14% 96%) !important;
+  box-shadow:
+    4px 4px 10px 0 hsl(213 60% 3% / 0.8),
+    -4px -4px 10px 0 hsl(213 40% 26% / 0.45),
+    inset 0 1px 0 hsl(213 40% 32% / 0.7),
+    0 0 0 1px hsl(214 82% 47% / 0.45);
+}
+.light .neu-tab[data-state="active"],
+.light .neu-tab.is-active {
+  background: hsl(210 15% 95%);
+  color: hsl(213 51% 11%) !important;
+  box-shadow:
+    3px 3px 8px 0 hsl(210 15% 78% / 0.7),
+    -3px -3px 8px 0 hsl(0 0% 100% / 0.9),
+    0 0 0 1px hsl(214 82% 42% / 0.4);
+}
+
+/* === Neumorphic chip (breadcrumb/section label) === */
+.neu-chip {
+  display: inline-block;
+  border-radius: 8px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: hsl(var(--primary));
+  background: hsl(var(--background));
+  transition: box-shadow 0.2s ease;
+}
+.dark .neu-chip {
+  box-shadow:
+    inset 2px 2px 5px 0 hsl(213 60% 5% / 0.55),
+    inset -2px -2px 5px 0 hsl(213 38% 20% / 0.3),
+    inset 0 0 0 1px hsl(214 82% 47% / 0.18);
+}
+.light .neu-chip {
+  background: hsl(210 15% 95%);
+  box-shadow:
+    inset 2px 2px 5px 0 hsl(210 15% 80% / 0.6),
+    inset -2px -2px 5px 0 hsl(0 0% 100% / 0.85),
+    inset 0 0 0 1px hsl(214 82% 42% / 0.2);
+}
+
+/* === Light ambient overrides === */
+.light .bg-ambient::before {
+  background: radial-gradient(
+    circle,
+    hsl(214 82% 42% / 0.25) 0%,
+    hsl(214 82% 42% / 0.10) 40%,
+    transparent 70%
+  );
+}
+.light .bg-ambient::after {
+  background: radial-gradient(
+    circle,
+    hsl(214 82% 51% / 0.20) 0%,
+    hsl(214 70% 55% / 0.08) 40%,
+    transparent 70%
+  );
+}
+.light .bg-noise::before {
+  opacity: 0.015;
+}
+
+/* === Light glass override === */
+.light .card-glass {
+  background: linear-gradient(
+    135deg,
+    hsl(0 0% 100% / 0.7) 0%,
+    hsl(210 15% 97% / 0.5) 100%
+  );
+  border: 1px solid hsl(210 15% 87% / 0.5);
+  box-shadow:
+    0 4px 24px -4px hsl(210 15% 70% / 0.15),
+    inset 0 1px 0 hsl(0 0% 100% / 0.6);
+}
+
+@keyframes drift-slow {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    transform: translate(-40px, 30px) scale(1.05);
+  }
+}
+
+@keyframes pulse-live {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.animate-pulse-live {
+  animation: pulse-live 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-loading {
+  background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--border)) 50%, hsl(var(--muted)) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+.light .skeleton-loading {
+  background: linear-gradient(
+    90deg,
+    hsl(210 12% 88%) 25%,
+    hsl(210 12% 78%) 50%,
+    hsl(210 12% 88%) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+/* ==========================================================================
+   Projetos › Cronograma — painel/gantt (mesma linguagem neumórfica do sistema)
+   ========================================================================== */
+.neu-panel {
+  border-radius: 20px;
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(145deg, #16273b, #101d2d);
+  box-shadow: 8px 8px 20px #03070cb3, -7px -7px 18px #253b5659, inset 0 1px #314e7280;
+}
+.light .neu-panel {
+  background: #fff;
+  border: 1px solid hsl(214 20% 84%);
+  box-shadow: 0 1px 2px 0 hsl(214 25% 45% / 0.07), 0 10px 26px -8px hsl(214 30% 40% / 0.14);
+}
+
+.neu-bar {
+  box-shadow: 4px 4px 10px #03070c73, -2px -2px 6px #ffffff14, inset 0 1px #ffffff59, inset 0 -2px #050c1440;
+}
+.neu-bar:hover {
+  box-shadow: 6px 6px 14px #03070c8c, -3px -3px 8px #ffffff1a, inset 0 1px #ffffff73;
+}
+.light .neu-bar {
+  box-shadow: 4px 4px 10px #8599ad59, -2px -2px 6px #fff9, inset 0 1px #fff6;
+}
+
+.neu-checkpoint {
+  border: 1px solid #ffffff59;
+  box-shadow: 3px 3px 7px #03070c8c, -2px -2px 5px #ffffff1f, inset 0 1px #ffffffe6, inset 0 -1px #050c1426;
+}
+.neu-checkpoint:hover {
+  box-shadow: 4px 4px 9px #03070ca6, -3px -3px 6px #ffffff26, inset 0 1px #fffffff2, inset 0 -1px #050c1433;
+}
+.light .neu-checkpoint {
+  border-color: #e6e6e6d9;
+  box-shadow: 3px 3px 7px #8599ad73, -2px -2px 5px #ffffffbf, inset 0 1px #ffffffe6, inset 0 -1px #66809926;
+}
+.light .neu-checkpoint:hover {
+  box-shadow: 4px 4px 9px #8599ad8c, -3px -3px 6px #ffffffe6, inset 0 1px #fffffff2, inset 0 -1px #66809933;
+}
+
+.table-grid { --grid-line: #465e7c; }
+.light .table-grid { --grid-line: #8b99a7; }
+.table-grid th, .table-grid td { border-color: var(--grid-line); }
+.table-grid-wrap {
+  border-color: var(--grid-line-outer, #496383);
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) hsl(var(--muted));
+}
+.light .table-grid-wrap { --grid-line-outer: #8594a3; }
+.table-grid-wrap::-webkit-scrollbar { height: 8px; }
+.table-grid-wrap::-webkit-scrollbar-track { background: hsl(var(--muted)); border-radius: 0 0 8px 8px; }
+.table-grid-wrap::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 4px; }
+.table-grid-wrap::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground)); }
+.table-grid th.sticky-col, .table-grid td.sticky-col {
+  z-index: 30; position: sticky; left: 0;
+  box-shadow: 4px 0 8px -2px #03070c59;
+}
+.light .table-grid th.sticky-col, .light .table-grid td.sticky-col {
+  box-shadow: 4px 0 8px -2px #a7b3be40;
+}
+
+/* ----------------------------------------------------------------------------------------------
+   IMPRESSÃO — o "Exportar Relatório (PDF)" da Central de Clientes.
+   
+   `imprimirNode` (src/utils/exportarRelatorio.ts) clona o relatório para dentro de `#print-root`,
+   fora do `#root` do app, e marca o `<body>`. Daí a regra ser por IRMÃO do print-root e não por
+   um seletor que descreva onde o relatório mora: ele aparece na aba da Central de Clientes e
+   também no diálogo de insumos do Composer, e um seletor por posição quebraria em um dos dois.
+   ---------------------------------------------------------------------------------------------- */
+
+#print-root {
+  display: none;
+}
+
+@media print {
+  body.imprimindo > *:not(#print-root) {
+    display: none !important;
+  }
+
+  body.imprimindo #print-root {
+    display: block !important;
+    padding: 0;
+  }
+
+  /* A impressão do navegador ignora cor de fundo por padrão (economia de tinta), e aí as faixas de
+     cabeçalho da tabela e as tarjas de prioridade somem — justamente o que separa as seções. */
+  body.imprimindo #print-root * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Tabela cortada ao meio por uma quebra de página é o defeito mais comum de impressão de
+     relatório, e o mais caro: a linha some sem deixar sinal de que sumiu. */
+  body.imprimindo #print-root table {
+    page-break-inside: auto;
+  }
+  body.imprimindo #print-root tr {
+    page-break-inside: avoid;
+  }
+  body.imprimindo #print-root thead {
+    display: table-header-group;
+  }
+
+  /* Nada de rolagem no papel: o que estava num `overflow-x-auto` precisa aparecer inteiro. */
+  body.imprimindo #print-root [class*="overflow-"] {
+    overflow: visible !important;
+  }
+
+  @page {
+    margin: 14mm;
+  }
+}

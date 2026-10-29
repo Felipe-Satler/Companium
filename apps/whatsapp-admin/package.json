@@ -1,0 +1,12 @@
+{
+  "name": "whatsapp-admin",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "API autenticada p/ conectar/gerenciar o canal WhatsApp do OpenClaw pela tela do Companium.",
+  "scripts": { "start": "node server.mjs" },
+  "dependencies": {
+    "express": "^4.21.2",
+    "jose": "^5.9.6"
+  }
+}

@@ -1,0 +1,12 @@
+# Instalar em /etc/systemd/system/whatsapp-agent-sync.timer (requer sudo).
+# Roda a cada 5 min; o sync é idempotente (só aplica/reinicia o gateway quando a config muda).
+[Unit]
+Description=Dispara o sync do agente WhatsApp a cada 5 min
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

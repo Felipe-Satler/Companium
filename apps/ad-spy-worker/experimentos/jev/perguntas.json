@@ -1,0 +1,71 @@
+{
+  "_leia": "Perguntas ESTREITAS, uma coisa por pergunta: o JEV erra muito com pergunta ampla (62,6% numa só vs 95% dividida em cinco, beri.net). Toda choice tem 'nenhum'. Edite à vontade; o script valida antes de gastar. 'nota.pesos' só aceita boolean e score.",
+  "perguntas": {
+    "gancho": {
+      "type": "choice",
+      "instructions": "Como o anúncio abre? Considere só a primeira frase do texto ou da fala.",
+      "criteria": {
+        "pergunta": "abre com uma pergunta ao espectador",
+        "dor_direta": "abre apontando um problema, incômodo ou erro do espectador",
+        "promessa": "abre prometendo um resultado ou benefício",
+        "curiosidade": "abre com um mistério, segredo ou afirmação surpreendente",
+        "autoridade": "abre apresentando o profissional, a formação ou a clínica",
+        "prova_social": "abre com depoimento, caso de paciente ou antes e depois",
+        "oferta": "abre com preço, condição, desconto ou avaliação gratuita",
+        "nenhum": "nenhuma das anteriores"
+      }
+    },
+    "especificidade": {
+      "type": "score",
+      "instructions": "Quão específico é o texto sobre o problema ou o resultado?",
+      "criteria": [
+        "vago: fala de beleza, saúde ou autoestima em geral",
+        "tem um detalhe concreto: nomeia o procedimento ou a região do corpo",
+        "muito específico: número, prazo, situação reconhecível ou caso concreto"
+      ]
+    },
+    "prova_concreta": {
+      "type": "boolean",
+      "instructions": "O anúncio traz prova concreta: número, caso real de paciente, antes e depois descrito ou depoimento?"
+    },
+    "mostra_resultado": {
+      "type": "boolean",
+      "instructions": "O anúncio descreve o resultado acontecendo, em vez de só prometer?"
+    },
+    "autoridade": {
+      "type": "boolean",
+      "instructions": "O anúncio cita formação, registro profissional (CRM, CRO), especialização ou anos de experiência?"
+    },
+    "trata_objecao": {
+      "type": "boolean",
+      "instructions": "O anúncio responde a uma objeção: dor, medo, preço, tempo de recuperação ou resultado artificial?"
+    },
+    "oferta_ou_preco": {
+      "type": "boolean",
+      "instructions": "O anúncio menciona preço, parcelamento, desconto, condição especial ou avaliação gratuita?"
+    },
+    "cta_explicito": {
+      "type": "boolean",
+      "instructions": "O anúncio pede uma ação clara, como agendar, chamar no WhatsApp ou clicar no link?"
+    },
+    "nivel_consciencia": {
+      "type": "choice",
+      "instructions": "Em que nível de consciência o anúncio encontra quem assiste?",
+      "criteria": {
+        "inconsciente": "a pessoa ainda não percebe que tem o problema",
+        "consciente_problema": "sabe que tem o problema, ainda não conhece a solução",
+        "consciente_solucao": "conhece o tipo de tratamento, ainda não escolheu onde fazer",
+        "consciente_produto": "já conhece a clínica ou o profissional e está decidindo",
+        "nenhum": "não dá para dizer pelo texto"
+      }
+    }
+  },
+  "nota": {
+    "_leia": "A fórmula da página que inspirou o experimento: palpite do autor, NÃO validado. O comando 'longevidade' mede quais destas perguntas acompanham os anúncios que duram — use isso para trocar os pesos.",
+    "pesos": {
+      "especificidade": 0.4,
+      "mostra_resultado": 0.35,
+      "prova_concreta": 0.25
+    }
+  }
+}

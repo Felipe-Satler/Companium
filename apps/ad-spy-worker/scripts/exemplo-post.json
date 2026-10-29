@@ -1,0 +1,31 @@
+{
+  "post": {
+    "schema": "post_renderizavel@1",
+    "template": { "id": "editorial", "versao": "1.0.0" },
+    "proporcao": "4:5",
+    "uso": "organico",
+    "circula_fora": false,
+    "elementos": { "logo": true, "nome_clinica": true, "identificacao": true, "whatsapp": true, "instagram": true, "endereco": true },
+    "identificacao": {
+      "nome": "Dr. Fulano de Tal", "crm": "12345", "uf": "RS", "rqe": "6789",
+      "linha": "Dr. Fulano de Tal | CRM/RS 12345 | RQE 6789",
+      "naArte": true, "naLegenda": false, "naoEspecialista": false
+    },
+    "slides": [
+      { "papel": "capa", "destaque": "Medicina do Sono", "titulo": "Seu ronco tem nome — e não é cansaço", "apoio": "O que acontece com o seu corpo enquanto você dorme mal.", "foto": null, "alt": "Capa: seu ronco tem nome" },
+      { "papel": "conteudo", "titulo": "A apneia interrompe o sono dezenas de vezes por hora", "apoio": "Você não lembra de acordar, mas o corpo lembra: cansaço de manhã, dor de cabeça e irritação ao longo do dia.", "foto": null, "alt": "Página 2: a apneia interrompe o sono" },
+      { "papel": "conteudo", "titulo": "Não é só barulho", "apoio": "Ronco frequente pode ser o sinal mais visível de um problema que afeta pressão, memória e humor.", "foto": null, "alt": "Página 3: não é só barulho" },
+      { "papel": "cta", "titulo": "Dá para investigar com uma conversa", "apoio": "Na consulta, entendemos o seu sono antes de qualquer exame.", "cta": "Agende sua avaliação", "foto": null, "alt": "Página final: agende sua avaliação" }
+    ],
+    "legenda": "Ronco não é só barulho...",
+    "hashtags": []
+  },
+  "marca": {
+    "nome_clinica": "Clínica Sono Bom",
+    "paleta": { "primaria": "#1B3A5C", "secundaria": "#E0A458", "terciaria": "#F5F2EC" },
+    "fontes": { "titulo": "Playfair Display", "texto": "Inter" },
+    "contatos": { "whatsapp": "(51) 99999-0000", "telefone": "", "instagram": "clinicasonobom", "site": "clinicasonobom.com.br", "email": "" },
+    "enderecos": [{ "rotulo": "Moinhos", "linha": "Rua Exemplo, 100 — Porto Alegre" }]
+  },
+  "imagens": { "fotos": [] }
+}

@@ -1,0 +1,5 @@
+node_modules/
+# Segredos: o arquivo real e QUALQUER cópia/backup dele (bridge.env.bak.*, bridge.env.old…).
+# Só `bridge.env` era ignorado, e um backup com a service_role acabou commitado.
+bridge.env*
+*.env.bak*

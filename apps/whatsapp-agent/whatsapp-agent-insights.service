@@ -1,0 +1,31 @@
+# Instalar em /etc/systemd/system/whatsapp-agent-insights.service (requer sudo).
+# Analisa as conversas dos grupos do WhatsApp (sentimento + andamento do atendimento)
+# pela CONEXÃO DE CONTA OpenClaw (sem API paga) e grava em whatsapp_group_insights.
+# Precisa das chaves Supabase: use o mesmo drop-in central dos outros serviços
+#   /etc/systemd/system/whatsapp-agent-insights.service.d/zz-supabase-central.conf
+#   [Service]
+#   EnvironmentFile=/etc/companium-supabase.env
+[Unit]
+Description=WhatsApp Agent insights (análise de sentimento/atendimento dos grupos -> Supabase)
+After=network-online.target openclaw-gateway.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=deploy
+WorkingDirectory=/home/deploy/companium/apps/whatsapp-agent
+Environment=HOME=/home/deploy
+Environment=TZ=America/Sao_Paulo
+Environment=PATH=/home/deploy/.nvm/versions/node/v22.23.4/bin:/usr/local/bin:/usr/bin:/bin
+# Chaves Supabase vêm do drop-in central (ver cabeçalho). Fallback local:
+EnvironmentFile=-/etc/companium-supabase.env
+ExecStart=/home/deploy/.nvm/versions/node/v22.23.4/bin/node /home/deploy/companium/apps/whatsapp-agent/insights.mjs --apply
+
+# Hardening: o CLI openclaw pode renovar o token OAuth da conexão (igual ao job de Análise IA).
+ProtectSystem=full
+ProtectHome=read-only
+ReadWritePaths=/home/deploy/.openclaw /home/deploy/.cache /home/deploy/.config /home/deploy/.local
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

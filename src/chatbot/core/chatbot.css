@@ -1,0 +1,717 @@
+/* Chatbot widget styling. All colors come from CSS variables (tokens) so the
+   host can restyle without touching this file. Defaults below = light theme;
+   html.dark overrides follow. (Step 8 will refine these tokens.) */
+
+.gh-chatbot {
+  --bot-accent: #1A73E9;
+  --bot-accent-contrast: #ffffff;
+  --bot-panel: #ffffff;
+  --bot-text: #1f2937;
+  --bot-muted: #6b7280;
+  --bot-border: #e5e7eb;
+  --bot-bubble-bot: #f3f4f6;
+  --bot-bubble-user: var(--bot-accent);
+  --bot-bubble-user-text: #ffffff;
+  --gh-clip-icon: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a5 5 0 0 1-7.07-7.07l9.19-9.19a3.5 3.5 0 0 1 4.95 4.95l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>');
+
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 2147483000; /* above app sidebars/dialogs/sheets */
+  /* The emoji families at the tail are what actually paint 🎉/⚠️ in bot text:
+     without them a bare `sans-serif` can fall back to tofu boxes or a
+     monochrome glyph, depending on the OS. Keep them last so they only ever
+     serve codepoints the text families don't cover. */
+  font-family: system-ui, -apple-system, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Noto Color Emoji', 'Segoe UI Symbol', 'Twemoji Mozilla';
+}
+
+html.dark .gh-chatbot {
+  --bot-panel: #1f2430;
+  --bot-text: #e5e7eb;
+  --bot-muted: #9ca3af;
+  --bot-border: #374151;
+  --bot-bubble-bot: #2b3140;
+}
+
+/* Full-page side panels (Conversas / Gerados): tom DISTINTO da área de conversa
+   (--chat-side-panel) + divisória à direita, p/ separar claramente as colunas
+   (o divisor fica no wrapper interno em ChatPage, some quando o painel colapsa). */
+.gh-side-panel {
+  background: var(--chat-side-panel, #f5f6f8);
+  /* Same emoji tail as .gh-chatbot — conversation titles are message text too. */
+  font-family: system-ui, -apple-system, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Noto Color Emoji', 'Segoe UI Symbol', 'Twemoji Mozilla';
+}
+
+/* Launcher (FAB) — botão flutuante moderno: gradiente do azul da marca, sombra
+   colorida em camadas e leve elevação/escala no hover. */
+.gh-chatbot-launcher {
+  @media (max-width: 500px) { display: none; } /* hide on small screens (mobile) */
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(145deg, #3d8bff 0%, var(--bot-accent) 55%, #135ec2 100%);
+  color: var(--bot-accent-contrast);
+  font-size: 24px;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 10px 26px -6px rgba(26, 115, 233, 0.5), 0 2px 6px rgba(2, 12, 40, 0.18);
+  transition: transform .18s cubic-bezier(.34, 1.3, .64, 1), box-shadow .18s ease;
+}
+.gh-chatbot-launcher:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 16px 34px -6px rgba(26, 115, 233, 0.55), 0 4px 12px rgba(2, 12, 40, 0.22);
+}
+.gh-chatbot-launcher:active { transform: translateY(0) scale(.97); }
+.gh-chatbot-launcher svg { width: 30px; height: 30px; }
+.gh-chatbot.is-open .gh-chatbot-launcher { display: none; }
+
+/* Panel */
+.gh-chatbot-panel {
+  display: none;
+  position: relative;
+  width: 360px;
+  height: 520px;
+  max-height: 80vh;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bot-panel);
+  color: var(--bot-text);
+  border: 1px solid var(--bot-border);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+}
+.gh-chatbot.is-open .gh-chatbot-panel { display: flex; }
+
+.gh-chatbot-resize {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  cursor: nwse-resize;
+  z-index: 5;
+  touch-action: none; /* prevent mobile scrolling while resizing */
+}
+.gh-chatbot-resize::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 7px;
+  height: 7px;
+  border-top: 2px solid var(--bot-accent-contrast);
+  border-left: 2px solid var(--bot-accent-contrast);
+  opacity: 0.6;
+}
+
+.gh-chatbot-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;                 /* space between the gear and close */
+  padding: 12px 14px;
+  background: var(--bot-accent);
+  color: var(--bot-accent-contrast);
+}
+.gh-chatbot-title { font-weight: 600; margin-right: auto; } /* pins title left */
+/* Header controls (gear + close): equal flex-centered boxes so the glyphs sit
+   on the same line regardless of their intrinsic size. */
+.gh-chatbot-close,
+.gh-chatbot-options {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  padding: 0;
+  background: none;
+  border: none;
+  color: inherit;
+  line-height: 1;
+  cursor: pointer;
+}
+.gh-chatbot-close { font-size: 22px; }
+.gh-chatbot-options { font-size: 18px; }
+
+.gh-chatbot-menu-wrap { position: relative; display: inline-flex; align-items: center; flex: 0 0 auto; }
+
+.gh-chatbot-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  min-width: 200px;
+  padding: 4px;
+  background: var(--bot-panel);
+  color: var(--bot-text);
+  border: 1px solid var(--bot-border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  z-index: 10;
+}
+.gh-chatbot-menu.is-open { display: block; }
+
+.gh-chatbot-menu-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.gh-chatbot-menu-item:hover,
+.gh-chatbot-menu-item:focus { background: var(--bot-bubble-bot); outline: none; }
+
+.gh-chatbot-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gh-chatbot-typing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+  margin: 0;
+  padding: 10px 12px;
+  background: var(--bot-bubble-bot);
+  border-radius: 14px;
+  border-bottom-left-radius: 4px;
+  width: fit-content;
+}
+
+.gh-typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--bot-muted);
+  animation: gh-typing 1.2s infinite;
+}
+.gh-typing-dot:nth-child(2) { animation-delay: 0.15s; }
+.gh-typing-dot:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes gh-typing {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+/* Streaming caret: a block cursor after the last paragraph of the growing reply.
+   Solid while tokens flow (rebuilds reset the blink), blinks during pauses. */
+.gh-chatbot.is-streaming .gh-chatbot-list .msg-wrapper.inbound:last-child .msg-content > p:last-child::after {
+  content: "";
+  display: inline-block;
+  width: 0.55em;
+  height: 1.02em;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  border-radius: 1px;
+  background: currentColor;
+  opacity: 0.6;
+  animation: gh-caret 1s steps(1) infinite;
+}
+@keyframes gh-caret { 50% { opacity: 0; } }
+
+/* Messages */
+.msg-wrapper { display: flex; flex-direction: column; max-width: 80%; }
+.msg-wrapper.outbound { align-self: flex-end; align-items: flex-end; }
+.msg-wrapper.inbound { align-self: flex-start; align-items: flex-start; }
+.msg-wrapper.system { align-self: center; align-items: center; }
+
+.msg-sender { font-size: 11px; color: var(--bot-muted); margin: 0 4px 2px; }
+
+.msg-bubble {
+  padding: 8px 12px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.msg-bubble.inbound {
+  background: var(--bot-bubble-bot);
+  color: var(--bot-text);
+  border-bottom-left-radius: 4px;
+}
+.msg-bubble.outbound {
+  background: var(--bot-bubble-user);
+  color: var(--bot-bubble-user-text);
+  border-bottom-right-radius: 4px;
+}
+.msg-bubble.sending { opacity: 0.7; }
+.msg-bubble.failed { border: 1px solid #ef4444; }
+
+.msg-meta { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.msg-time-inner { font-size: 10px; opacity: 0.7; }
+.msg-retry {
+  font-size: 11px;
+  cursor: pointer;
+  background: none;
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  padding: 1px 6px;
+  color: inherit;
+}
+
+.msg-artifact {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--bot-accent);
+  text-decoration: none;
+}
+.msg-plot { margin-top: 6px; }
+.msg-plot-link { color: var(--bot-accent); }
+.msg-plot-link img { max-width: 100%; border-radius: 8px; }
+/* the plot link is a <button> (opens the modal), so strip default button chrome */
+button.msg-plot-link {
+  display: block;
+  width: 100%;
+  padding: 0;
+  background: none;
+  border: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.msg-date-sep {
+  text-align: center;
+  font-size: 11px;
+  color: var(--bot-muted);
+  margin: 8px 0;
+}
+
+/* Footer / input */
+.gh-chatbot-footer {
+  padding: 10px;
+  border-top: 1px solid var(--bot-border);
+}
+.gh-chatbot-composer { display: flex; gap: 8px; align-items: flex-end; }
+/* Two-row composer (inline + modern): controls row below the textarea. */
+.gh-chatbot-composer-row { display: flex; align-items: center; gap: 8px; }
+/* Send à direita: no inline quem empurra é o slot do bot (.gh-chatbot-composer-slot);
+   no modern (flutuante) não há slot, então o próprio Send recebe o margin-left:auto. */
+.gh-chatbot--modern .gh-chatbot-composer-row .gh-chatbot-send { margin-left: auto; }
+/* textarea is a column child now: content-height, not flex-grow (base is flex:1). */
+.gh-chatbot--inline .gh-chatbot-input,
+.gh-chatbot--modern .gh-chatbot-input { flex: 0 0 auto; }
+.gh-chatbot-input {
+  flex: 1;
+  resize: none;
+  border: 1px solid var(--bot-border);
+  border-radius: 8px;
+  padding: 8px;
+  font: inherit;
+  background: transparent;
+  color: var(--bot-text);
+  max-height: 120px;
+}
+.gh-chatbot-send {
+  background: var(--bot-accent);
+  color: var(--bot-accent-contrast);
+  border: none;
+  border-radius: 8px;
+  padding: 0 16px;
+  cursor: pointer;
+}
+.gh-chatbot-send:disabled { opacity: 0.5; cursor: default; }
+.gh-chatbot-send { transition: transform 0.1s ease, opacity 0.15s ease; }
+.gh-chatbot-send:active:not(:disabled) { transform: scale(0.92); }
+
+/* Visually hidden but available to screen readers (live-region announcer). */
+.gh-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Title as a bot dropdown */
+/* margin-right:auto pushes the gear/close to the right; min-width:0 lets the
+   wrap shrink on a narrow panel so the label ellipsizes instead of pushing the
+   caret out of view. */
+.gh-chatbot-title-wrap { position: relative; margin-right: auto; min-width: 0; background-color: rgb(0 0 0 / 15%); padding: 2px 6px; border-radius: 6px; }
+.gh-chatbot-title-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  min-width: 0; max-width: 100%;
+  padding: 0; background: none; border: none;
+  color: inherit; font: inherit; font-weight: 600; cursor: pointer;
+}
+.gh-chatbot-title-label {
+  flex: 0 1 auto;          /* shrink the name first... */
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 220px;        /* safety cap so a long name never overflows the header */
+}
+.gh-chatbot-title-caret { flex: 0 0 auto; display: inline-flex; align-items: center; opacity: 0.75; }  /* SVG chevron, never clipped */
+.gh-chatbot-title-btn.is-disabled { cursor: default; opacity: 0.55; } /* grayed when can't switch */
+.gh-chatbot-title-menu { top: 100%; left: 0; right: auto; }           /* drop under the title */
+
+
+/* Markdown rendering overrides for bot output. These are applied to the innerHTML of
+   the msg-bubble.inbound div, so they only affect bot messages. */
+.msg-content p { margin: 0 0 6px; }
+.msg-content p:last-child { margin-bottom: 0; }
+/* The app reset (Tailwind preflight) strips list markers and heading styles
+   inside the widget — re-declare them explicitly for bot Markdown. */
+.msg-content ul { list-style: disc; margin: 4px 0; padding-left: 20px; }
+.msg-content ol { list-style: decimal; margin: 4px 0; padding-left: 20px; }
+.msg-content li { margin: 2px 0; }
+
+.msg-content h1, .msg-content h2, .msg-content h3 {
+  font-weight: 700;          /* reset zerou o bold dos títulos */
+  margin: 10px 0 4px;
+  line-height: 1.2;
+}
+.msg-content h1 { font-size: 18px; }
+.msg-content h2 { font-size: 16px; }
+.msg-content h3 { font-size: 15px; }   /* era 14px = igual ao corpo, por isso não destacava */
+.msg-content a { color: var(--bot-accent); text-decoration: underline; }
+.msg-content code { background: rgba(0,0,0,.08); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+.msg-content pre { background: rgba(0,0,0,.08); padding: 8px; border-radius: 8px; overflow-x: auto; }
+.msg-content pre code { background: none; padding: 0; }
+.msg-content table { border-collapse: collapse; font-size: 12px; margin: 6px 0; }
+.msg-content th, .msg-content td { border: 1px solid var(--bot-border); padding: 3px 6px; }
+.msg-content blockquote { margin: 6px 0; padding-left: 8px; border-left: 3px solid var(--bot-border); color: var(--bot-muted); }
+
+
+/* Inline / full-page variant: fill the container, drop the floating chrome. */
+.gh-chatbot--inline { position: static; inset: auto; width: 100%; height: 100%; z-index: auto; }
+.gh-chatbot--inline .gh-chatbot-launcher,
+.gh-chatbot--inline .gh-chatbot-close,
+.gh-chatbot--inline .gh-chatbot-menu-wrap,   /* settings gear: redundant on the page (uses ConversationList) */
+.gh-chatbot--inline .gh-chatbot-resize { display: none; }
+/* ===== Full-page (LLM-style) look ==========================================
+   A centered conversation column, document-like assistant messages, subtle
+   user bubbles, a frosted top bar, and a rounded composer pill with an icon
+   send button. Tweak --gh-col-max to widen/narrow the column. */
+.gh-chatbot--inline {
+  --gh-col-max: 768px;
+  --gh-send-icon: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 5l7 7-1.4 1.4L13 8.83V20h-2V8.83L6.4 13.4 5 12z"/></svg>');
+}
+.gh-chatbot--inline .gh-chatbot-panel {
+  display: flex; width: 100%; height: 100%; max-height: none;
+  border: none; border-radius: 0; box-shadow: none;
+}
+
+/* Header: minimal frosted top bar matching the sidebar; floats over the list. */
+.gh-chatbot--inline .gh-chatbot-header {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 40;
+  padding: 12px 40px;
+  background: hsl(var(--sidebar-background) / 0.72);
+  color: hsl(var(--sidebar-foreground));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+/* Long conversation titles: truncate with an ellipsis. flex:1 1 auto makes the
+   title fill the header width, min-width:0 overrides the flex default
+   (min-width:auto), and margin-right:0 cancels the base auto-margin (which would
+   compete with the shrink). The text then overflows INSIDE the title -> ellipsis. */
+.gh-chatbot--inline .gh-chatbot-title {
+  flex: 1 1 auto; min-width: 0; margin-right: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* Messages: centered column (scrollbar stays at the panel edge), airy spacing. */
+.gh-chatbot--inline .gh-chatbot-list {
+  gap: 28px;
+  padding: 76px max(16px, calc((100% - var(--gh-col-max)) / 2)) 16px;
+  /* No smooth scroll: the auto-follow sets scrollTop on every stream chunk; a
+     smooth animation never settles and fights the reader (jolts to top). */
+}
+.gh-chatbot--inline .gh-chatbot-list::-webkit-scrollbar { width: 8px; }
+.gh-chatbot--inline .gh-chatbot-list::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.25); border-radius: 8px;
+}
+
+/* Assistant: document-like, no bubble, full column width. */
+.gh-chatbot--inline .msg-wrapper.inbound { max-width: 100%; }
+.gh-chatbot--inline .msg-bubble.inbound {
+  background: transparent; padding: 0; border-radius: 0;
+  font-size: 16px; line-height: 1.72;
+}
+/* User: soft rounded box, right-aligned. */
+.gh-chatbot--inline .msg-wrapper.outbound { max-width: 80%; }
+.gh-chatbot--inline .msg-bubble.outbound {
+  background: hsl(var(--muted) / 0.7); color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border) / 0.6);
+  border-radius: 22px; padding: 11px 16px; font-size: 16px; line-height: 1.6;
+}
+
+/* Bot markdown: roomier rhythm on the page (widget keeps the compact version). */
+.gh-chatbot--inline .msg-content p { margin: 0 0 12px; }
+.gh-chatbot--inline .msg-content ul,
+.gh-chatbot--inline .msg-content ol { margin: 10px 0; padding-left: 24px; }
+.gh-chatbot--inline .msg-content li { margin: 4px 0; }
+.gh-chatbot--inline .msg-content h1,
+.gh-chatbot--inline .msg-content h2,
+.gh-chatbot--inline .msg-content h3 { margin: 18px 0 8px; }
+.gh-chatbot--inline .msg-content pre { border-radius: 12px; padding: 12px 14px; }
+.gh-chatbot--inline .msg-content > :first-child { margin-top: 0; }
+.gh-chatbot--inline .msg-content > :last-child { margin-bottom: 0; }
+
+/* Empty state (Claude-like): center the composer vertically and float a
+   greeting + suggestion chips (React, .gh-empty-hero) above it. Uses :has(). */
+.gh-chatbot--inline .gh-chatbot-panel:has(.gh-chatbot-list:empty) {
+  justify-content: center;
+  /* mobile: don't vertically center -> composer stays at the bottom and the hero
+     (top-34%) sits above it instead of colliding with a centered composer. */
+  @media (max-width: 500px) { justify-content: flex-start; }
+}
+.gh-chatbot--inline .gh-chatbot-panel:has(.gh-chatbot-list:empty) .gh-chatbot-list {
+  flex: 0 0 auto; padding-top: 0; padding-bottom: 0;
+  /* media LAST so it wins over the base flex above: fill -> composer to bottom. */
+  @media (max-width: 500px) { padding: 0 16px; flex: 1 1 auto; }
+}
+/* The hero lives in the React chat-center; shown only while the list is empty. */
+.gh-empty-hero { display: none; }
+.gh-chat-center:has(.gh-chatbot-list:empty) .gh-empty-hero {
+  display: flex; flex-direction: column; align-items: center;
+}
+
+/* Composer: a centered rounded pill. */
+.gh-chatbot--inline .gh-chatbot-footer {
+  border-top: none; background: transparent; padding: 8px 16px 24px;
+}
+.gh-chatbot--inline .gh-chatbot-composer {
+  width: 100%; max-width: var(--gh-col-max); margin: 0 auto;
+  flex-direction: column; align-items: stretch; gap: 6px;
+  padding: 10px 14px;
+  border: 1px solid hsl(var(--border));
+  border-radius: 20px;
+  background: hsl(var(--card));
+  box-shadow: 0 2px 12px rgb(0 0 0 / 0.06);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.gh-chatbot--inline .gh-chatbot-composer:focus-within {
+  border-color: var(--bot-accent);
+  box-shadow: 0 2px 16px rgb(0 0 0 / 0.08), 0 0 0 1px var(--bot-accent);
+}
+.gh-chatbot--inline .gh-chatbot-input {
+  border: none; background: transparent; padding: 8px 0; max-height: 200px;
+  font-size: 16px; line-height: 1.6;
+}
+.gh-chatbot--inline .gh-chatbot-input:focus { outline: none; }
+.gh-chatbot--inline .gh-chatbot-composer-slot { display: flex; align-items: center; margin-left: auto }
+
+/* Send: circular icon button — the "Send" text is hidden and an up-arrow is
+   drawn with a CSS mask (the DOM label stays for screen readers). */
+.gh-chatbot--inline .gh-chatbot-send {
+  width: 36px; height: 36px; flex: 0 0 auto; padding: 0;
+  /* flex (not grid): the hidden "Send" text is a second child; grid would put it
+     on its own row and shove the arrow above center. flex keeps both on one row. */
+  border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0;
+}
+.gh-chatbot--inline .gh-chatbot-send::before {
+  content: ""; width: 18px; height: 18px; background: var(--bot-accent-contrast);
+  -webkit-mask: var(--gh-send-icon) center / 18px no-repeat;
+          mask: var(--gh-send-icon) center / 18px no-repeat;
+}
+
+/* ===== Modern floating widget =============================================
+   The floating popup borrows the full-page look — bubble-less assistant, soft
+   user bubble, frosted header, rounded composer pill with an icon send button —
+   but stays a fixed-size popup with its launcher / close / resize. No side
+   panels (conversations/artifacts) here. */
+.gh-chatbot--modern {
+  --gh-send-icon: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 5l7 7-1.4 1.4L13 8.83V20h-2V8.83L6.4 13.4 5 12z"/></svg>');
+}
+.gh-chatbot--modern .gh-chatbot-panel {
+  width: 400px; height: 580px; max-height: 84vh;
+  border: 1px solid hsl(var(--border) / 0.6);
+  border-radius: 22px;
+  box-shadow: 0 28px 64px -14px rgba(2, 12, 40, 0.38), 0 8px 20px -10px rgba(2, 12, 40, 0.24);
+  transform-origin: bottom right;
+}
+/* Entrada suave ao abrir (fade + subida + leve escala), ancorada no canto do FAB. */
+@keyframes gh-panel-pop-in {
+  from { opacity: 0; transform: translateY(14px) scale(.96); }
+  to   { opacity: 1; transform: none; }
+}
+.gh-chatbot--modern.is-open .gh-chatbot-panel {
+  animation: gh-panel-pop-in .22s cubic-bezier(.34, 1.2, .64, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gh-chatbot--modern.is-open .gh-chatbot-panel { animation: none; }
+  .gh-chatbot-launcher { transition: none; }
+}
+
+/* Header: barra frosted clara com avatar do bot + indicador "online", no lugar
+   da faixa sólida azul. Mantém o seletor de bot (gear) e o fechar. */
+.gh-chatbot--modern .gh-chatbot-header {
+  position: relative;
+  padding: 11px 12px;
+  gap: 10px;
+  background: linear-gradient(180deg, hsl(var(--card)), hsl(var(--card) / 0.9));
+  color: hsl(var(--foreground));
+  border-bottom: 1px solid hsl(var(--border) / 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+/* Avatar do bot (círculo com gradiente + ícone de robô branco) antes do título. */
+.gh-chatbot--modern .gh-chatbot-header::before {
+  content: "";
+  width: 34px; height: 34px; flex: 0 0 auto; border-radius: 50%;
+  background:
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>') center / 19px no-repeat,
+    linear-gradient(145deg, #3d8bff, #1A73E9);
+  box-shadow: 0 2px 6px rgba(26, 115, 233, 0.35);
+}
+/* Ponto verde "online" no canto do avatar. */
+.gh-chatbot--modern .gh-chatbot-header::after {
+  content: "";
+  position: absolute; left: 35px; top: 33px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: #22c55e; border: 2px solid hsl(var(--card));
+}
+.gh-chatbot--modern .gh-chatbot-title { font-size: 15px; font-weight: 600; }
+/* Bot-picker button in the header: drop the dark chip for a clean label. */
+.gh-chatbot--modern .gh-chatbot-title-wrap { background-color: transparent; padding: 2px 4px; }
+.gh-chatbot--modern .gh-chatbot-title-btn { font-size: 15px; font-weight: 600; }
+.gh-chatbot--modern .gh-chatbot-close,
+.gh-chatbot--modern .gh-chatbot-options {
+  color: hsl(var(--muted-foreground));
+  border-radius: 9px;
+  transition: color .15s ease, background-color .15s ease;
+}
+.gh-chatbot--modern .gh-chatbot-close:hover,
+.gh-chatbot--modern .gh-chatbot-options:hover {
+  color: hsl(var(--foreground));
+  background: hsl(var(--muted) / 0.7);
+}
+.gh-chatbot--modern .gh-chatbot-resize::before {
+  border-top-color: hsl(var(--muted-foreground)); border-left-color: hsl(var(--muted-foreground));
+}
+
+/* Messages: airy spacing, slim scrollbar. */
+.gh-chatbot--modern .gh-chatbot-list { gap: 20px; padding: 16px 16px 12px; }
+.gh-chatbot--modern .gh-chatbot-list::-webkit-scrollbar { width: 8px; }
+.gh-chatbot--modern .gh-chatbot-list::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.25); border-radius: 8px;
+}
+/* Estado vazio: saudação centralizada enquanto não há mensagens (padrão Claude). */
+.gh-chatbot--modern .gh-chatbot-list:empty {
+  align-items: center; justify-content: center; text-align: center;
+}
+.gh-chatbot--modern .gh-chatbot-list:empty::before {
+  content: "👋  Olá! Sou o assistente. Como posso ajudar você hoje?";
+  max-width: 250px; color: hsl(var(--muted-foreground));
+  font-size: 15px; line-height: 1.55;
+}
+
+/* Assistant: document-like, no bubble. User: soft rounded box, right-aligned. */
+.gh-chatbot--modern .msg-wrapper.inbound { max-width: 100%; }
+.gh-chatbot--modern .msg-bubble.inbound {
+  background: transparent; padding: 0; border-radius: 0;
+  font-size: 15px; line-height: 1.65;
+}
+.gh-chatbot--modern .msg-wrapper.outbound { max-width: 85%; }
+.gh-chatbot--modern .msg-bubble.outbound {
+  background: hsl(var(--muted) / 0.7); color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border) / 0.6);
+  border-radius: 18px; padding: 9px 14px; font-size: 15px; line-height: 1.55;
+}
+.gh-chatbot--modern .msg-content > :first-child { margin-top: 0; }
+.gh-chatbot--modern .msg-content > :last-child { margin-bottom: 0; }
+.gh-chatbot--modern .msg-content pre { border-radius: 10px; }
+
+/* Composer: a rounded pill with a circular icon send button. */
+.gh-chatbot--modern .gh-chatbot-footer {
+  border-top: none; background: transparent; padding: 8px 14px 14px;
+}
+.gh-chatbot--modern .gh-chatbot-composer {
+  display: flex; flex-direction: column; align-items: stretch; gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid hsl(var(--border));
+  border-radius: 18px;
+  background: hsl(var(--card));
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.06);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.gh-chatbot--modern .gh-chatbot-composer:focus-within {
+  border-color: var(--bot-accent);
+  box-shadow: 0 2px 14px rgb(0 0 0 / 0.08), 0 0 0 1px var(--bot-accent);
+}
+.gh-chatbot--modern .gh-chatbot-input {
+  border: none; background: transparent; padding: 7px 0; max-height: 140px;
+  font-size: 15px; line-height: 1.55;
+}
+.gh-chatbot--modern .gh-chatbot-input:focus { outline: none; }
+.gh-chatbot--modern .gh-chatbot-send {
+  width: 34px; height: 34px; flex: 0 0 auto; padding: 0;
+  /* flex (not grid) — see the inline note: keeps the arrow centered. */
+  border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0;
+}
+.gh-chatbot--modern .gh-chatbot-send::before {
+  content: ""; width: 17px; height: 17px; background: var(--bot-accent-contrast);
+  -webkit-mask: var(--gh-send-icon) center / 17px no-repeat;
+          mask: var(--gh-send-icon) center / 17px no-repeat;
+}
+
+/* ===== Attachments (image/PDF the user sends) =============================== */
+/* Paperclip button inside the composer (masked icon, matches the send button). */
+.gh-chatbot-attach {
+  width: 34px; height: 34px; flex: 0 0 auto; padding: 0;
+  border: none; background: none; cursor: pointer;
+  display: grid; place-items: center; border-radius: 50%;
+  color: hsl(var(--muted-foreground));
+  transition: color .15s ease, background-color .15s ease;
+}
+.gh-chatbot-attach:hover { color: hsl(var(--foreground)); background: hsl(var(--muted) / 0.6); }
+.gh-chatbot-attach:disabled { opacity: 0.5; cursor: default; }
+.gh-chatbot-attach::before {
+  content: ""; width: 18px; height: 18px; background: currentColor;
+  -webkit-mask: var(--gh-clip-icon) center / 18px no-repeat;
+          mask: var(--gh-clip-icon) center / 18px no-repeat;
+}
+
+/* Pending-attachment chip above the composer pill. */
+.gh-chatbot-attach-preview { padding: 0 6px 6px; }
+.gh-chatbot--modern .gh-chatbot-attach-preview,
+.gh-chatbot--inline .gh-chatbot-attach-preview {
+  max-width: var(--gh-col-max, 100%); margin: 0 auto; width: 100%;
+}
+.gh-attach-chip {
+  display: inline-flex; align-items: center; gap: 6px; max-width: 100%;
+  padding: 4px 6px 4px 9px; border-radius: 10px;
+  background: hsl(var(--muted) / 0.7); border: 1px solid hsl(var(--border) / 0.6);
+  font-size: 12px; color: hsl(var(--foreground));
+}
+.gh-attach-ic { flex: 0 0 auto; }
+.gh-attach-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px; }
+.gh-attach-remove {
+  flex: 0 0 auto; border: none; background: none; cursor: pointer;
+  color: hsl(var(--muted-foreground)); font-size: 16px; line-height: 1; padding: 0 2px;
+}
+.gh-attach-remove:hover { color: hsl(var(--foreground)); }
+.gh-attach-error { font-size: 12px; color: hsl(var(--destructive)); }
+
+/* Attachment chip inside a sent user bubble. */
+.msg-attachment {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 6px;
+  padding: 5px 9px; border-radius: 10px;
+  background: hsl(var(--muted) / 0.6); border: 1px solid hsl(var(--border) / 0.5);
+  font-size: 12px;
+}
+.msg-attach-ic { flex: 0 0 auto; }
+.msg-attach-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px; }

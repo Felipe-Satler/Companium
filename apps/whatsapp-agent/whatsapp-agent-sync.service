@@ -1,0 +1,30 @@
+# Instalar em /etc/systemd/system/whatsapp-agent-sync.service (requer sudo).
+# Sincroniza a config do agente WhatsApp (Supabase) -> gateway OpenClaw.
+# Precisa das chaves Supabase: use o mesmo drop-in central dos outros serviços
+#   /etc/systemd/system/whatsapp-agent-sync.service.d/zz-supabase-central.conf
+#   [Service]
+#   EnvironmentFile=/etc/companium-supabase.env
+[Unit]
+Description=WhatsApp Agent sync (Supabase -> OpenClaw gateway)
+After=network-online.target openclaw-gateway.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=deploy
+WorkingDirectory=/home/deploy/companium/apps/whatsapp-agent
+Environment=HOME=/home/deploy
+Environment=TZ=America/Sao_Paulo
+Environment=PATH=/home/deploy/.nvm/versions/node/v22.23.4/bin:/usr/local/bin:/usr/bin:/bin
+# Chaves Supabase vêm do drop-in central (ver cabeçalho). Fallback local:
+EnvironmentFile=-/etc/companium-supabase.env
+ExecStart=/home/deploy/.nvm/versions/node/v22.23.4/bin/node /home/deploy/companium/apps/whatsapp-agent/sync.mjs --apply
+
+# Hardening: precisa escrever no AGENTS.md e ler/gravar config do gateway em ~/.openclaw.
+ProtectSystem=full
+ProtectHome=read-only
+ReadWritePaths=/home/deploy/.openclaw
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

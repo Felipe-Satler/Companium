@@ -1,0 +1,49 @@
+[Unit]
+Description=Ad spy worker (Mineração): Meta Ad Library -> transcrição local -> agente OpenClaw
+After=network-online.target openclaw.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=deploy
+WorkingDirectory=/home/deploy/companium/apps/ad-spy-worker
+Environment=NODE_ENV=production
+Environment=PORT=18901
+Environment=HOST=127.0.0.1
+Environment=PATH=/home/deploy/.nvm/versions/node/v22.22.3/bin:/usr/local/bin:/usr/bin:/bin
+# SUPABASE_SERVICE_KEY (obrigatória — sem ela POST /runs responde 503), SPY_AGENT_ID,
+# SPY_META_PROVIDER, SCRAPECREATORS_API_KEY, SPY_PYTHON_BIN, SPY_WHISPER_*, SPY_PROXY,
+# OPENCLAW_GATEWAY_* etc. Arquivo com permissão 600, fora do git.
+EnvironmentFile=/home/deploy/companium/apps/ad-spy-worker/spy.env
+# NÃO acrescente `EnvironmentFile=-/home/deploy/.openclaw/.env` aqui para pegar o token do ClickUp
+# emprestado — foi a primeira ideia, e o `man systemd.exec` a derruba:
+#
+#   "Settings from these files override settings made with Environment=."
+#
+# EnvironmentFile vence Environment= em QUALQUER posição no unit. O `.env` do OpenClaw é a
+# configuração do gateway dele; um `PORT=` lá dentro passaria por cima do `Environment=PORT=18901`
+# acima, o worker subiria na porta errada e o nginx começaria a dar 502. `OPENCLAW_GATEWAY_*`,
+# `SUPABASE_*` e `PATH` têm o mesmo problema, e a colisão é provável, não hipotética. Entre dois
+# EnvironmentFile o ÚLTIMO ganha, então nem a ordem salva: o arquivo do OpenClaw ganharia do
+# `spy.env`.
+#
+# As duas linhas de ClickUp vão para o `spy.env`, copiadas sem o valor passar pela tela:
+#   grep -E "^CLICKUP_(API_TOKEN|TEAM_ID)=" /home/deploy/.openclaw/.env >> .../spy.env
+# Confira em: curl -s localhost:18901/api/spy/health | jq .clickup
+ExecStart=/home/deploy/.nvm/versions/node/v22.22.3/bin/node /home/deploy/companium/apps/ad-spy-worker/index.js
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+# Uma run carrega um Chrome headless + um modelo Whisper na RAM. Medido em produção: uma run de 4
+# anúncios com o modelo `medium` teve pico de 3.9 GB. Por isso o worker roda UMA run por vez
+# (MAX_RUNS_INFLIGHT=1) e este teto é a rede de segurança para a caixa, que também serve o site e
+# o openclaw-bridge. Se for aumentar a concorrência, suba os dois juntos — e meça de novo.
+MemoryMax=6G
+# O Playwright sobe processos filhos; garante que nenhum sobreviva a um restart.
+KillMode=control-group
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

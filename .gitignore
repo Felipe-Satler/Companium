@@ -1,0 +1,40 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.last-deployed
+spy.env
+
+# TypeScript build info (tsc -b)
+*.tsbuildinfo
+
+# --- hardening de segurança (auditoria 2026-10-23): nunca versionar env/segredos ---
+.env
+.env.*
+!.env.example
+*.env
+*.env.bak*
+spy.env
+bridge.env
+*.pem
+*.key

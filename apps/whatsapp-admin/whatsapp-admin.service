@@ -1,0 +1,31 @@
+# Instalar em /etc/systemd/system/whatsapp-admin.service (requer sudo).
+# API local (127.0.0.1:18920) que a tela usa p/ conectar/gerenciar o WhatsApp.
+# nginx deve proxyar /api/whatsapp/ -> http://127.0.0.1:18920 (ver WHATSAPP_AGENT.md).
+[Unit]
+Description=WhatsApp Admin API (conectar/gerenciar canal WhatsApp do OpenClaw pela tela)
+After=network-online.target openclaw-gateway.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=deploy
+WorkingDirectory=/home/deploy/companium/apps/whatsapp-admin
+Environment=NODE_ENV=production
+Environment=PORT=18920
+Environment=HOST=127.0.0.1
+Environment=HOME=/home/deploy
+Environment=PATH=/home/deploy/.nvm/versions/node/v22.23.4/bin:/usr/local/bin:/usr/bin:/bin
+# Chaves Supabase (SUPABASE_URL/SERVICE_KEY) do arquivo central:
+EnvironmentFile=/etc/companium-supabase.env
+ExecStart=/home/deploy/.nvm/versions/node/v22.23.4/bin/node /home/deploy/companium/apps/whatsapp-admin/server.mjs
+Restart=always
+RestartSec=3
+
+# Hardening: precisa do CLI openclaw (lê/escreve ~/.openclaw p/ login/sessão).
+ProtectSystem=full
+ProtectHome=read-only
+ReadWritePaths=/home/deploy/.openclaw
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

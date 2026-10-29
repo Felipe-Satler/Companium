@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Companium</title>
+    <meta name="description" content="Companium — dashboard de gestão para clínicas e operações de tráfego pago." />
+    <meta name="author" content="Companium" />
+
+    <link rel="icon" type="image/png" href="/apple-touch-icon.png" />
+    <link rel="shortcut icon" type="image/png" href="/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+    <meta property="og:title" content="Companium" />
+    <meta property="og:description" content="Companium — dashboard de gestão para clínicas e operações de tráfego pago." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/og-image.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="/og-image.png" />
+
+    <!-- Fonte Inter auto-hospedada (@font-face em src/index.css → /fonts/*.woff2, servidos
+         pelo próprio domínio). Sem <link> para o Google Fonts: respeita o CSP (style-src/
+         font-src 'self') sem precisar afrouxá-lo. -->
+
+    <!-- Anti-FOUC: aplica a classe de tema ANTES do 1º paint (o CSS base :root é o tema
+         escuro; sem isto haveria um flash escuro antes do React montar). Padrão = claro. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("app-theme-v2");
+          document.documentElement.classList.add(t === "dark" ? "dark" : "light");
+        } catch (e) {
+          document.documentElement.classList.add("light");
+        }
+      })();
+    </script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

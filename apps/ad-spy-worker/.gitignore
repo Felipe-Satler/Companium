@@ -1,0 +1,7 @@
+node_modules/
+# Segredos: spy.env e qualquer cópia/backup dele. O .example é a exceção, de propósito.
+spy.env*
+!spy.env.example
+*.env.bak*
+__pycache__/
+*.pyc

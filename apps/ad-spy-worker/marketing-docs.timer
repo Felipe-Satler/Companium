@@ -1,0 +1,17 @@
+[Unit]
+Description=Sincroniza os documentos do ClickUp (diário)
+
+[Timer]
+# DIÁRIO, 04:00 — meia hora antes do marketing-briefs de segunda, para não disputarem a rede.
+#
+# Diário e não semanal (ao contrário dos resumos) porque a economia está em outro lugar: aqui não há
+# chamada de agente por cliente. Listar o workspace é uma busca paginada e o conteúdo só é baixado
+# para quem tem `date_updated` mais recente que a última leitura, então em regime a execução é curta.
+# Documento editado hoje serve de insumo ao Composer amanhã; quem precisa de agora usa o botão.
+OnCalendar=*-*-* 04:00:00
+# Máquina desligada no horário: roda quando voltar. Documento de ontem é melhor que nenhum.
+Persistent=true
+RandomizedDelaySec=600
+
+[Install]
+WantedBy=timers.target

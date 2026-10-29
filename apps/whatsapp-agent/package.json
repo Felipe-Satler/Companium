@@ -1,0 +1,14 @@
+{
+  "name": "whatsapp-agent-sync",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Sincroniza a config do agente de WhatsApp (Supabase) para o gateway OpenClaw.",
+  "scripts": {
+    "sync": "node sync.mjs",
+    "apply": "node sync.mjs --apply"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0"
+  }
+}

@@ -1,0 +1,13 @@
+# Instalar em /etc/systemd/system/whatsapp-agent-insights.timer (requer sudo).
+# Analisa as conversas dos grupos de hora em hora. Idempotente (upsert por grupo); só
+# gera custo de modelo quando há mensagens novas na janela. É independente do sync (5 min).
+[Unit]
+Description=Dispara a análise de sentimento/atendimento dos grupos WhatsApp (de hora em hora)
+
+[Timer]
+OnBootSec=8min
+OnUnitActiveSec=60min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

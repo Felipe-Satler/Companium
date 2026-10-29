@@ -1,0 +1,3 @@
+gestao-proxy.env
+node_modules/
+*.log

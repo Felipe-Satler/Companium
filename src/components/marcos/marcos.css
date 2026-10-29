@@ -1,0 +1,208 @@
+/* Estilos da tela Marcos, portados para o Companium.
+   NÃO redefine as classes neu-* globais (neu-card/neu-inset/neu-raised/neu-chip/
+   neu-button) — a tela reaproveita as do Companium. Só adiciona:
+   - os tokens de movimento e das divisórias da grade;
+   - `.neu-scroll` (a barra de rolagem fina, que o Companium ainda não tinha);
+   - as classes `marcos-*`.
+   Tokens do tema são triplos HSL no Companium, então sempre via hsl(var(--x)). */
+
+:root {
+  --marcos-motion-fast: 150ms;
+  --marcos-motion-standard: 220ms;
+  --marcos-motion-enter: ease-out;
+  --marcos-motion-exit: ease-in;
+  --marcos-grid-divider: color-mix(in oklab, hsl(var(--border)) 75%, hsl(var(--foreground)) 25%);
+  --marcos-grid-month: color-mix(in oklab, var(--marcos-grid-divider) 98%, transparent);
+  --marcos-grid-horizontal: color-mix(in oklab, var(--marcos-grid-divider) 70%, transparent);
+  --marcos-grid-subcolumn: color-mix(in oklab, var(--marcos-grid-divider) 42%, transparent);
+}
+
+/* Barra de rolagem fina (não existia no Companium) — usada pela grade da Marcos. */
+.neu-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--primary)) hsl(var(--background));
+}
+
+.neu-scroll::-webkit-scrollbar {
+  width: 10px;
+  height: 8px;
+}
+
+.neu-scroll::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+  border-radius: 10px;
+}
+
+.neu-scroll::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary));
+  border-radius: 10px;
+  border: 2px solid hsl(var(--background));
+}
+
+.neu-scroll::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.85);
+}
+
+.neu-scroll::-webkit-scrollbar-corner {
+  background: hsl(var(--background));
+}
+
+.marcos-month-columns {
+  display: grid;
+  grid-template-columns: 170px 160px minmax(0, 1fr);
+  width: 430px;
+  min-width: 430px;
+  flex-shrink: 0;
+}
+
+.marcos-goal-pill {
+  background-color: color-mix(in oklab, hsl(var(--foreground)) 5%, transparent);
+}
+
+.marcos-current-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+}
+
+@media (max-width: 1023px) {
+  .marcos-current-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 639px) {
+  .marcos-current-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.marcos-current-track {
+  background: hsl(var(--muted));
+  box-shadow:
+    inset 2px 2px 4px hsl(var(--foreground) / 0.12),
+    inset -1px -1px 3px hsl(var(--background) / 0.6);
+}
+
+.marcos-current-fill {
+  width: var(--meta-fill);
+  background: currentColor;
+}
+
+.marcos-current-overflow {
+  width: var(--meta-overflow);
+  background: color-mix(in oklab, currentColor 60%, hsl(var(--foreground)) 40%);
+}
+
+.marcos-current-limit {
+  left: var(--meta-limit);
+}
+
+.marcos-grid-month-divider {
+  border-color: var(--marcos-grid-month);
+}
+
+.marcos-grid-horizontal-divider {
+  border-color: var(--marcos-grid-horizontal);
+}
+
+.marcos-grid-subcolumn-divider {
+  border-color: var(--marcos-grid-subcolumn);
+}
+
+.marcos-group-collapse {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows var(--marcos-motion-standard) var(--marcos-motion-enter);
+}
+
+.marcos-group-collapse[data-collapsed="true"] {
+  grid-template-rows: 0fr;
+  transition-timing-function: var(--marcos-motion-exit);
+}
+
+.marcos-group-collapse-inner {
+  min-height: 0;
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity var(--marcos-motion-standard) var(--marcos-motion-enter);
+}
+
+.marcos-group-collapse[data-collapsed="true"] .marcos-group-collapse-inner {
+  opacity: 0;
+  transition-timing-function: var(--marcos-motion-exit);
+}
+
+.marcos-group-chevron {
+  transition: transform var(--marcos-motion-standard) var(--marcos-motion-enter);
+}
+
+.marcos-group-chevron[data-collapsed="true"] {
+  transform: rotate(-90deg);
+  transition-timing-function: var(--marcos-motion-exit);
+}
+
+.marcos-chart-layer {
+  position: absolute;
+  inset: 0;
+  min-width: 0;
+  min-height: 0;
+}
+
+.marcos-chart-layer-enter {
+  opacity: 1;
+  transition: opacity var(--marcos-motion-standard) var(--marcos-motion-enter);
+}
+
+.marcos-chart-layer-enter[data-entering="true"] {
+  opacity: 0;
+}
+
+.marcos-chart-layer-exit {
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--marcos-motion-fast) var(--marcos-motion-exit);
+}
+
+.marcos-chart-layer-exit .recharts-tooltip-wrapper {
+  display: none;
+}
+
+.marcos-chart-layer-exit[data-exiting="false"] {
+  opacity: 1;
+}
+
+.marcos-viz-pill {
+  transition-duration: var(--marcos-motion-fast);
+  transition-timing-function: var(--marcos-motion-enter);
+}
+
+/* Modal "Exportar CSV": overlay escurecido + animações (o botão usa o .neu-button do Companium). */
+.marcos-export-overlay {
+  background: hsl(var(--background) / 0.8);
+  backdrop-filter: blur(3px);
+}
+
+.marcos-export-dialog[data-state="open"],
+.marcos-export-overlay[data-state="open"] {
+  animation-duration: var(--marcos-motion-standard);
+  animation-timing-function: var(--marcos-motion-enter);
+}
+
+.marcos-export-dialog[data-state="closed"],
+.marcos-export-overlay[data-state="closed"] {
+  animation-duration: var(--marcos-motion-fast);
+  animation-timing-function: var(--marcos-motion-exit);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marcos-group-collapse,
+  .marcos-group-collapse-inner,
+  .marcos-chart-layer,
+  .marcos-viz-pill {
+    transition-duration: 0ms;
+  }
+  .marcos-export-dialog,
+  .marcos-export-overlay {
+    animation-duration: 0ms !important;
+  }
+}

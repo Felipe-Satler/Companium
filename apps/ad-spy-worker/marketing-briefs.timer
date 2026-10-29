@@ -1,0 +1,18 @@
+[Unit]
+Description=Reescreve o Contexto Operacional de Marketing › Clientes (semanal)
+
+[Timer]
+# UMA VEZ POR SEMANA, segunda 04:30 no fuso da máquina (America/Sao_Paulo). Semanal e não diário
+# porque o texto descreve como a operação do cliente roda — cadência, aprovações, quem responde —, e
+# isso não muda de um dia para o outro; e porque cada execução gasta uma chamada de agente por
+# cliente. Quem precisar do estado de agora usa o "atualizar" no card, que sempre reconsulta o
+# ClickUp.
+OnCalendar=Mon *-*-* 04:30:00
+# Se a máquina estiver desligada no horário, roda assim que voltar — contexto da semana passada é
+# melhor que nenhum.
+Persistent=true
+# Evita que toda máquina do mundo bata no mesmo minuto (e dá folga se o worker estiver ocupado).
+RandomizedDelaySec=600
+
+[Install]
+WantedBy=timers.target
