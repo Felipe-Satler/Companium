@@ -2,7 +2,7 @@
 
 Plataforma interna de analytics e operação que desenvolvi na **Groohub**, uma assessoria de marketing e vendas para médicos e clínicas. Ela junta em um só lugar os dados de mídia paga, CRM e gestão da carteira de clientes, e traz ferramentas de IA para o time de marketing.
 
-> Os nomes de clientes, pessoas, contas de anúncio e identificadores de infraestrutura deste repositório são **fictícios**. Nenhum dado real de cliente está incluído.
+> Os nomes de clientes, pessoas, contas de anúncio e identificadores de infraestrutura deste repositório são **mockados**.
 
 ## O que tem dentro
 
@@ -44,8 +44,6 @@ npm test
 
 ## Como foi feito
 
-O código foi escrito com ferramentas de IA (Lovable e Claude Code). A definição do que construir, as decisões de arquitetura e de dados, a validação dos números contra as plataformas de anúncio e os testes de cada funcionalidade foram feitos por mim.
+O código foi escrito com ferramentas de IA (Lovable e Claude Code). A definição do que construir, as decisões de arquitetura e de dados, a validação dos números contra as plataformas de anúncio e os testes de cada funcionalidade foram feitos manualmente.
 
 ---
-
-Desenvolvido por **Felipe Satler** · Groohub, 2026
